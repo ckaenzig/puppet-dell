@@ -17,11 +17,20 @@ class dell::warranty (
     fail 'You need to declare class dell'
   }
 
-  vcsrepo { "${dell::customplugins}/dell_warranty":
-    ensure   => $ensure,
-    provider => git,
-    source   => 'https://git.gitorious.org/smarmy/check_dell_warranty.git',
-    revision => $dell::check_warranty_revision,
+  case $ensure {
+    'present': {
+      vcsrepo { "${dell::customplugins}/dell_warranty":
+        ensure   => $ensure,
+        provider => git,
+        source   => 'https://git.gitorious.org/smarmy/check_dell_warranty.git',
+        revision => $dell::check_warranty_revision,
+      }
+    }
+    'absent': {
+      file { "${dell::customplugins}/dell_warranty":
+        ensure => absent,
+      }
+    }
   }
 
   file { "${dell::customplugins}/dell_warranty/check_dell_warranty.py":
